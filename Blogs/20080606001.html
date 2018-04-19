@@ -1,0 +1,112 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Xin-Yu Ou（欧新宇）</title>
+    <meta name="description" content="欧新宇老师个人主页，用于自我介绍和为教学、科研服务。" />
+    <meta name="keywords" content="Xin-Yu Ou, xinyu ou, 欧新宇, ouxinyu, shiorioy, 个人主页, 欧老师, 宇宙骑士" />
+    <meta name="author" content="Xin-Yu Ou（欧新宇）" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../style/style.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+        <script type="text/javascript" src="../js/logo_content.js"></script>
+
+
+        <script type="text/javascript" src="../js/menu_content.js"></script>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+        <!-- insert the page content here -->
+        <h1>各大网站幻灯片Flash广告的ASP.Net/C#版</h1>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+          <p>找来不少代码，都是用js写的，由于我的平台是基于C#的.net开发的，而且又特别想直接去读取SQL数据库来显示Flash图片新闻，所以就自己写了一个.net版的，各位达人看看，有什么地方可以改进的，给点意见，也给各位用.net开发者的一个思路。 </p>
+          <p>下面贴代码了。</p>
+          <h2 style="font-weight:bold;color:blue;">ShowFlashAd.aspx </h2>
+          <pre>
+    &lt;form id="form1" runat="server"&gt;
+    &lt;div&gt;
+         &lt;object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" 
+                    http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"; 
+                    target=_blank&gt;http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" 
+                    width="&lt;%=Pics_Width %&gt;" height="&lt;%=Swf_Height %&gt;"&gt; 
+         &lt;param name="allowscriptaccess" value="sameDomain"/&gt; 
+         &lt;param name="movie" value="flash/loader.swf"/&gt; 
+         &lt;param name="quality" value="high"/&gt;
+         &lt;param name="bgcolor" value="#F0F0F0"/&gt; 
+         &lt;param name="menu" value="false"/&gt;
+         &lt;param name="wmode" value="opaque"/&gt;
+         &lt;param name="flashvars" value="Pics=&lt;%=Pics %&gt;&links=&lt;%=Links %&gt;&texts=&lt;%=Texts %&gt;
+                    &borderwidth=&lt;%=Pics_Width %&gt;&borderheight=&lt;
+                    %=Pics_Height %&gt;&textheight=&lt;%=Texts_Height %&gt;"/&gt;
+         &lt;/object&gt;                   
+     &lt;/div&gt;
+     &lt;/form&gt;
+            </pre>
+          <p>这个主要是用在前台显示Flash的，各位一看就知道了，不过要自己去下载一个loader.swf的文件。</p>
+          <h2 style="font-weight:bold;color:blue;">ShowFlashAd.aspx.cs </h2>
+          <pre>
+using System; 
+using System.Data; 
+using System.Configuration; 
+using System.Collections; 
+using System.Web; 
+using System.Web.Security; 
+using System.Web.UI; 
+using System.Web.UI.WebControls; 
+using System.Web.UI.WebControls.WebParts; 
+using System.Web.UI.HtmlControls; 
+using System.Data.SqlClient; 
+public partial class Page_Function_showflashad : System.Web.UI.Page 
+{ 
+    public int Pics_Width = 240; 
+    public int Pics_Height = 180; 
+    public int Texts_Height = 18; 
+    public int Swf_Height; 
+    public string Pics; 
+    public string Links; 
+    public string Texts; 
+    public void Page_Load(object sender, EventArgs e) 
+    { 
+        //链接数据库，并获取数据库中FlashAD表中的数据 
+        SqlConnection objConn = new SqlConnection(); 
+        objConn.ConnectionString = ConfigurationManager.ConnectionStrings["yntvuConnectionString"].ConnectionString; 
+        objConn.Open(); 
+        SqlCommand objCmd = new SqlCommand(); 
+        objCmd.Connection = objConn; 
+        objCmd.CommandText = "Select Top 6 * From FlashAdPic Where IsShow='1' and IsDel='0'"; 
+        SqlDataReader objReader=objCmd.ExecuteReader(); 
+        //将查询结果保存到数组变量中，并进行调用 
+        string[] imgPics = new string[6]; 
+        string[] imgTexts = new string[6]; 
+        string[] imgLinks = new string[6]; 
+        int i; 
+        for (i = 0; i < 6; i++) 
+        { 
+            objReader.Read(); 
+            imgPics = objReader["Pics"].ToString(); 
+            imgLinks = objReader["Links"].ToString(); 
+            imgTexts = objReader["Texts"].ToString(); 
+            Pics = i == 5 ? Pics = Pics + imgPics : Pics + imgPics + "|"; 
+            Links = i == 5 ? Links = Links + imgLinks: Links + imgLinks + "|"; 
+            Texts = i == 5 ? Texts= Texts + imgTexts: Texts + imgTexts + "|"; 
+        } 
+        objConn.Close(); 
+        Swf_Height = Pics_Height + Texts_Height; 
+    } 
+} 
+            </pre>
+          <p>这里我只固定显示6幅图，可以自行更改数量，或者修改成动态的也没问题。</p>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+    </div>
+    
+    <script type="text/javascript" src="../js/copyright.js"></script>
+
+  </div>
+</body>
+</html>

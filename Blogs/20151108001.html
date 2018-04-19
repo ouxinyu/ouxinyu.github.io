@@ -1,0 +1,244 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Xin-Yu Ou（欧新宇）</title>
+    <meta name="description" content="欧新宇老师个人主页，用于自我介绍和为教学、科研服务。" />
+    <meta name="keywords" content="Xin-Yu Ou, xinyu ou, 欧新宇, ouxinyu, shiorioy, 个人主页, 欧老师, 宇宙骑士" />
+    <meta name="author" content="Xin-Yu Ou（欧新宇）" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="refresh" content="0; url=http://blog.csdn.net/shiorioxy/article/details/78850199" />
+    <link rel="stylesheet" type="text/css" href="../style/style.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+        <script type="text/javascript" src="../js/logo_content.js"></script>
+
+
+        <script type="text/javascript" src="../js/menu_content.js"></script>
+    </div>
+    <div id="content_header"></div>
+      <div id="site_content">
+          <!-- insert the page content here -->
+          <h1>Caffe + Ubuntu 15.04 + CUDA 7.5 新手安装配置指南</h1>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+
+          <p style="color:red;font-size:14px;">特别说明：</p>
+          <p style="color:red;font-size:14px;">0. Caffe 官网地址：http://caffe.berkeleyvision.org/ </p>
+          <p style="color:red;font-size:14px;">1. 本文为作者亲自实验完成，但仅限用于学术交流使用，使用本指南造成的任何不良后果由使用者自行承担，与本文作者无关，谢谢！为保证及时更新，转载请标明出处，谢谢！</p>
+          <p style="color:red;font-size:14px;">2. 本文旨在为新手提供一个参考，请高手勿要吐槽，有暴力倾向者，请绕道，谢谢！</p>
+          <p style="color:red;font-size:14px;">3. 本文使用2015年11月8日下载的caffe-master版本，运行平台为：Ubuntu 15.04，CUDA7.5，cuDNN v4，Intel Parallel Studio XE Cluster 2016，OpenCV 3.0.0 (本来准备换Ubuntu 15.10但是一直报错，就没有仔细折腾了，有兴趣的可以试试。)</p>
+          <p style="color:red;font-size:14px;">4. 安装过程，因为平台不同、设备不同、操作者不同，会遇到各种奇怪的问题和报错信息，请善用Caffe官网的Issues和caffe-user论坛,以及Google和Baidu。参考本指南，请下载最新版caffe-master，新版本很多文件已经变更。</p>
+          <p style="color:red;font-size:14px;">5. 最后更新时间：2016年3月13日。本次更新以最简化方式呈现如何安装部署最新版Caffe-Master，如需看旧版本，请点击链接。<a href="http://ouxinyu.github.io/Blogs/20140723001.html" target="_blank">Caffe + Ubuntu 15.04 + CUDA 7.0 新手安装配置指南</a> </p>
+          <p style="color:blue;font-size:14px;" >PS：为了方便大家使用，我提供一个百度云盘，用于分享部分安装过程中需要用到的软件包和链接地址（所有软件包仅供学术交流使用，请大家尽量去官网下载。）。百度云盘链接: http://pan.baidu.com/s/1qX1uFHa 密码:wysa </p>
+
+          <p>这篇安装指南，适合零基础，新手操作，请高手勿要吐槽！</p>
+          <p>简单介绍一下：Caffe，一种Convolutional Neural Network的工具包，和Alex的cuda-convnet功能类似，但各有特点。都是使用C++ CUDA进行底层编辑，Python进行实现，原作主要部署于Ubuntu，也有大神发布了Windows版，但其他相关资料较少，不适合新手使用，所以还是Ubuntu的比较适合新手。（相对而言）</p>
+          <p>本文主要包含5个部分，包括：</p>
+          <ul>
+              <li><strong>第一部分 Linux安装</strong></li>
+              <li><strong>第二部分 nVidia CUDA Toolkit的安装（*.deb方法）</strong></li>
+              <li><strong>第三部分 Matlab安装和调试</strong></li>
+              <li><strong>第四部分 Caffe-Master的安装和测试</strong></li>
+              <li><strong>第五部分 增加新层（以Fast RCNN提出的 ROIPooling layer 为例）</strong></li>
+          </ul>
+          <br />
+          <h1 style="color:navy;">第一部分 Linux安装</h1>
+          <p>Linux的安装，如果不是Linux粉，只是必须，被迫要用它来作作科研什么的，建议安装成双系统，网上方法很多，这里我就不详细写了，安装还算是傻瓜式的，和windows的过程类似，至于语言，如果觉得难度还不够大的话，完全可以装E文版的，甚至日文，德文~~~，我是装的简体中文版，我总共用分出的500G的空间来安装Ubuntu 14.04，这个版本是最新的版本，有个好处是，可以直接访问Windows8.1的NTFS分区，不用做额外的操作，而且支持中文，例如：$ cd /media/yourname/分区名字/文件夹名，当然GUI就更方便了.</p>
+          <p>我的分区设置如下：</p>
+          <p class="red">根分区： \  100G，</p>
+          <p class="red">Swap交换分区：128G ，这里设置为何内存一样，据说小于16G的内存，就设置成内存的1.5-2倍</p>
+          <p class="red">boot分区：200M</p>
+          <p class="red">Home分区：剩余的空间，鉴于Imagenet，PASCAL VOC之类的大客户，建议500G，至少300G以上。</p>
+          <p><strong> PS：解决启动分区错误</strong></p>
+          <p> 基本上，重装起来，都会破坏原来的启动分区表，还原Windows分区的一个简单办法：</p>
+          <p class="navyBold">$ sudo gedit etc/default/grub</p>
+          <p class="red">设置：GRUB_DEFAULT = 2</p>
+          <p class="navyBold">$ sudo update-grub</p>
+          <p>该方法适用于安装双系统后，"看得到Linux，看不到Windows”的情况，反过来的话，请大家自己百度吧。</p>
+          <p><strong> PS：关于我的笔记本的特例，仅供类似设备的参考</strong></p>
+          <p>笔记本配置：技嘉P35X v3，i7-4720HQ@2.6G/16G/NVidia GTX 980 4G/Intel HD 4600/128G SSD*2 + 2T SATA *2</p>
+          <p>我的两组硬盘SSD和SATA分别做Raid 0，目的是合并逻辑分区，没有考虑冗余备份问题，最后的状态是2个逻辑硬盘块256G SSD + 4T SATA，用的GPA分区，最后导致利用Ubuntu的GRUB启动界面找不到Windows分区。所以上面的方法失效。不过，可以通过笔记本的F12和Bios设置来实现启动分区的选择，并且我用Linux的机会很少，所以也就如此处理了，Linux高手可以自己折腾一下Grub启动。Ubuntu 15.04安装在SATA逻辑分区，SSD分区安装Windows8.1。</p>
+          <br />
+
+          <h1 style="color:navy;">第二部分：nVidia CUDA Toolkit的安装（*.deb方法）</h1>
+          <p>PS：特别推荐*.deb的方法，目前已提供离线版的deb文件，该方法比较简单，不需要切换到tty模式，因此不再提供原来的*.run安装方法，这里以CUDA 7.5为例。</p>
+          <p class="Bold">一、CUDA Repository</p>
+          <p>获取CUDA安装包,安装包请自行去NVidia官网下载。（<a href="https://developer.nvidia.com/cuda-downloads" target="_blank">https://developer.nvidia.com/cuda-downloads</a>）</p>
+          <p class="navyBold">$ sudo dpkg -i cuda-repo-ubuntu1504-7-5-local_7.5-18_amd64</p>
+          <p class="navyBold">$ sudo apt-get update</p>
+          <p class="Bold">二、CUDA Toolkit</p>
+          <p class="navyBold">$ sudo apt-get install -y cuda</p>
+          <br />
+
+          <h1 style="color:navy;">第三部分 Matlab安装和调试（以Matlab 2014a为例）</h1>
+          <p class="Bold">1.下载</p>
+          <p>由于该软件为商业软件，请大家自行寻找，安装学习，并确保不使用做商业目的，下载24小时删除......</p>
+          <p class="Bold">2. 预准备</p>
+          <p>选择Mathworks.Matlab.R2014a.Unix.iso - 右键 - 使用磁盘映像挂载器打开”，进入装载的虚拟光盘，拷贝全部文件至home/Matlab 文件夹(PS：我的原则是能GUI就GUI，喜欢CMD的可以参照执行)</p>
+          <p>复制Crack/install.jar至 home/Matlab/java/jar/ 并覆盖源文件</p>
+          <p class="navyBold">$ sudo cp install.jar /home/Matlab/java/jar/</p>
+          <p class="Bold">3. 授权安装文件夹</p>
+          <p class="navyBold">$ chmod a+x Matlab -R</p>
+          <p class="Bold">4. 安装 </p>
+          <p class="navyBold">$ sudo ./install  </p>
+          <p>选项：不使用Internet安装</p>
+          <p>序列号： 12345-67890-12345-67890 </p>
+          <p>默认路径：/usr/local/MATLAB/R2014a </p>
+          <p>勾选从默认启动路径创建符号链接（实现在任意位置运行matlab启动程序）</p>
+          <p>激活文件：license_405329_R2014a.lic</p>
+          <p>拷贝 libmwservices.so 至 /usr/local/MATLAB/R2014a/bin/glnxa64</p>
+          <p class="navyBold">$ sudo cp libmwservices.so /usr/local/MATLAB/R2014a/bin/glnxa64/</p>
+          <p class="Bold">5.解决编译器gcc/g++版本问题。</p>
+          <p>因为Ubuntu 15.04的gcc/g++版本是4.9.2，而Matlab 2014a（2015a）的版本是4.7.x所以在使用matla调用mex文件的时候，基本上都会报错，根据报错信息，考虑如下两步解决方案。<p>
+          <p class="Bold">A. 降级安装gcc/g++版本为4.7.x </p>
+          <p>(a). 下载gcc/g++ 4.7.x</p>
+          <p class="navyBold">$ sudo apt-get install -y gcc-4.7</p>
+          <p class="navyBold">$ sudo apt-get install -y g++-4.7</p>
+          <p>(b). 链接gcc/g++实现降级</p>
+          <p class="navyBold">$ cd /usr/bin</p>
+          <p class="navyBold">$ sudo rm gcc</p>
+          <p class="navyBold">$ sudo ln -s gcc-4.7 gcc</p>
+          <p class="navyBold">$ sudo rm g++</p>
+          <p class="navyBold">$ sudo ln -s g++-4.7 g++</p>
+          <p class="Bold">B. 暴力引用新版本GLIBCXX_3.4.20</p>
+          <p class="navyBold">$ sudo cp /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.20 /usr/local/MATLAB/R2014a/sys/os/glnxa64/libstdc++.so.6.0.20 （libstdc++.so.6.0.20的版本，可能因为系统不同而不同，使用最新的就可以了。）</p>
+          <p class="navyBold">目录切换到 /usr/local/MATLAB/R2014a/sys/os/glnxa64/ ，非常重要！</p>
+          <p class="navyBold">$ sudo mv libstdc++.so.6 libstdc++.so.6.backup （仅仅是备份，可以不备份，直接删除）。</p>
+          <p class="navyBold">$ sudo ln -s libstdc++.so.6.0.20 libstdc++.so.6</p>
+          <p class="navyBold">$ sudo ldconfig -v</p>
+          <p> 通过命令“strings /usr/local/MATLAB/R2014a/sys/os/glnxa64/libstdc++.so.6 | grep GLIBCXX_” 可以看一下，是否已经成功包含了GLIBCXX_3.4.21，如果已经存在，基本上就成功了。 </p>
+          <p class="Bold">6.编译Matlab用到的caffe文件（见第五部分）</p>
+
+
+          <h1 style="color:navy;">第五部分 Caffe-Master的安装和测试</h1>
+          <p>对于Caffe的安装严格遵照官网的要求来：http://caffe.berkeleyvision.org/installation.html </p>
+          <p class="Bold">一、安装BLAS</p>
+          <p>这里可以选择（ATLAS，MKL或者OpenBLAS），我这里使用MKL，首先下载并安装英特尔® 数学内核库 Linux* 版MKL(Intel(R) Parallel Studio XE Cluster Edition for Linux 2016)，下载链接是：https://software.intel.com/en-us/intel-education-offerings， 使用学生身份（邮件 + 学校）下载Student版，填好各种信息，可以直接下载，同时会给你一个邮件告知序列号。下载完之后，要把文件解压到home文件夹(或直接把tar.gz文件拷贝到home文件夹,为了节省空间，安装完记得把压缩文件给删除喔～)，或者其他的ext4的文件系统中。 </p>
+          <p>很多人说，下载不了，本人于2105年11月8日使用该地址下载最新的2016版本，仍然没有问题，请大家细心操作^_^。</p>
+          <p class="red">接下来是安装过程，先授权，然后安装：</p>
+          <p class="navyBold">$ tar zxvf parallel_studio_xe_2016.tar.gz  （如果你是直接拷贝压缩文件过来的）</p>
+          <p class="navyBold">$ chmod a+x parallel_studio_xe_2016 -R</p>
+          <p class="navyBold">$ sh install_GUI.sh</p>
+          <p class="red">PS: 安装的时候，建议使用root权限安装，过程中会要求输入Linux的root口令。（设置方法：命令行：$ sudo passwd）</p>
+          <p class="Bold">二、MKL与CUDA的环境设置</p>
+          <p>1. 新建intel_mkl.conf， 并编辑之：</p>
+          <p class="navyBold">$ sudo gedit /etc/ld.so.conf.d/intel_mkl.conf</p>
+          <p class="red">/opt/intel/lib/intel64</p>
+          <p class="red">/opt/intel/mkl/lib/intel64</p>
+          <p>2. 新建cuda.conf，并编辑之：</p>
+          <p class="navyBold">$ sudo gedit /etc/ld.so.conf.d/cuda.conf</p>
+          <p class="red">/usr/local/cuda/lib64</p>
+          <p class="red">/lib</p>
+          <p>3. 完成lib文件的链接操作，执行：</p>
+          <p class="navyBold">$ sudo ldconfig -v</p>
+          <p class="Bold">三、安装OpenCV 3.0.0</p>
+          <p>1. 下载并编译OpenCV（官网原版OpenCV：http://opencv.org/）， 或者使用我提供的修改版的安装包(前面的百度云下载)（下面的安装方式使用该包完成，安装包修改了dependencies.sh文件并增加了OpenCV 3.0.0的安装文件） </p>
+          <p>2. 切换到文件保存的文件夹，然后安装依赖项：</p>
+          <p class="navyBold">$ sudo sh Ubuntu/dependencies.sh</p>
+          <p>3. 切换目录Ubuntu\3.0\安装OpenCV 3.0.0：</p>
+          <p class="navyBold">$ sudo sh opencv3_0_0.sh</p>
+          <p>保证网络畅通，因为软件需要联网这里时间较长，请耐心等待。。。，</p>
+          <p class="Bold">四、安装其他依赖项</p>
+          <p>1. Google Logging Library（glog），下载地址：https://code.google.com/p/google-glog/，然后解压安装： </p>
+          <p class="navyBold">$ tar zxvf glog-0.3.3.tar.gz</p>
+          <p class="navyBold">$ ./configure</p>
+          <p class="navyBold">$ make</p>
+          <p class="navyBold">$ sudo make install</p>
+          <p class="red">如果没有权限就chmod a+x glog-0.3.3 -R , 或者索性 chmod 777 glog-0.3.3 -R , 装完之后，这个文件夹就可以kill了。</p>
+          <p>2. 其他依赖项，确保都成功</p>
+          <p class="navyBold">$ sudo apt-get install -y libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libboost-all-dev libhdf5-serial-dev libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler protobuf-c-compiler protobuf-compiler</p>
+
+          <p class="Bold">五、安装Caffe并测试</p>
+          <p>1. 安装pycaffe必须的一些依赖项：</p>
+          <p class="navyBold">$ sudo apt-get install -y python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-gflags cython ipython</p>
+
+          <p>2. 安装配置nVidia cuDNN 加速Caffe模型运算</p>
+          <p> a. 安装前请去先官网下载最新的cuDNN (cudnn-7.0-linux-x64-v4.0-prod)。</p>
+          <p class="navyBold">$ sudo cp include/cudnn.h /usr/local/include</p>
+          <p class="navyBold">$ sudo cp lib64/libcudnn.* /usr/local/lib</p>
+          <p> b. 链接cuDNN的库文件</p>
+          <p class="navyBold">$ sudo ln -sf /usr/local/lib/libcudnn.so.4.0.7 /usr/local/lib/libcudnn.so.4</p>
+          <p class="navyBold">$ sudo ln -sf /usr/local/lib/libcudnn.so.4 /usr/local/lib/libcudnn.so</p>
+          <p class="navyBold">$ sudo ldconfig -v</p>
+
+          <p>3. 切换到Caffe-master的文件夹，生成Makefile.config配置文件，执行：</p>
+          <p class="navyBold">$ cp Makefile.config.example Makefile.config</p>
+
+          <p>4. 配置Makefile.config文件（仅列出修改部分）</p>
+          <p>a. 启用CUDNN，去掉"#"
+          <p class="red">USE_CUDNN := 1</p>
+
+          <p>b. 配置一些引用文件（增加部分主要是解决新版本下，HDF5的路径问题）</p>
+          <p class="red">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/lib/x86_64-linux-gnu/hdf5/serial/include</p>
+          <p class="red">LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial</p>
+
+          <p>c. 启用Intel Parallel Studio XE 2016 </p>
+          <p class="red">BLAS := mkl</p>
+
+          <p>d. 配置路径，实现caffe对Python和Matlab接口的支持</p>
+          <p class="red">PYTHON_LIB := /usr/local/lib</p>
+          <p class="red">MATLAB_DIR := /usr/local/MATLAB/R2014a</p>
+
+          <p>c. 启用OpenCV 3.0, 去掉"#" </p>
+          <p class="red">OPENCV_VERSION =3</p>
+
+          <p>6. 编译caffe-master！！！"-j16"是使用CPU的多核进行编译，可以极大地加速编译的速度，建议使用。</p>
+          <p class="navyBold">$ make all -j16</p>
+          <p class="navyBold">$ make test -j16</p>
+          <p class="navyBold">$ make runtest -j16</p>
+
+          <p class="Bold">编译Python和Matlab用到的caffe文件</p>
+          <p class="navyBold">$ make pycaffe -j16</p>
+          <p class="navyBold">$ make matcaffe -j16</p>
+
+          <p class="Bold">六、使用MNIST数据集进行测试</p>
+          <p>Caffe默认情况会安装在$CAFFE_ROOT，就是解压到那个目录，例如：$ home/username/caffe-master，所以下面的工作，默认已经切换到了该工作目录。下面的工作主要是，用于测试Caffe是否工作正常，不做详细评估。具体设置请参考官网：http://caffe.berkeleyvision.org/gathered/examples/mnist.html </p>
+          <p>1. 数据预处理</p>
+          <p class="navyBold">$ sh data/mnist/get_mnist.sh</p>
+          <p>2. 重建lmdb文件。Caffe支持多种数据格式输入网络，包括Image(.jpg, .png等)，leveldb，lmdb，HDF5等，根据自己需要选择不同输入吧。</p>
+          <p class="navyBold">$ sh examples/mnist/create_mnist.sh</p>
+          <p>生成mnist-train-lmdb 和 mnist-train-lmdb文件夹，这里包含了lmdb格式的数据集</p>
+
+          <p>3. 训练mnist</p>
+          <p class="navyBold">$ sh examples/mnist/train_lenet.sh</p>
+          <p>至此，Caffe安装的所有步骤完结，下面是一组简单的数据对比，实验来源于MNIST数据集，主要是考察一下不同系统下CPU和GPU的性能。可以看到明显的差别了，虽然MNIST数据集很简单，相信复杂得数据集，差别会更大，Ubuntu+GPU是唯一的选择了。</p>
+          <p class="red">测试平台1：i7-4770K/16G/GTX 770/CUDA 6.5</p>
+          <p class="red">MNIST Windows8.1 on CPU：620s</p>
+          <p class="red">MNIST Windows8.1 on GPU：190s</p>
+          <p class="red">MNIST Ubuntu 14.04 on CPU：270s </p>
+          <p class="red">MNIST Ubuntu 14.04 on GPU：160s</p>
+          <p class="red">MNIST Ubuntu 14.04 on GPU with cuDNN：30s</p>
+          <p class="red">Cifar10_full on GPU wihtout cuDNN：73m45s = 4428s　<i>（Iteration 70000）</i></p>
+          <p class="red">Cifar10_full on GPU with cuDNN：20m7s = 1207s　<i>（Iteration 70000）</i></p>
+          <br />
+          
+          <p class="red">测试平台2：技嘉P35X v3，i7-4720HQ@2.6G/16G/NVidia GTX 980 8G</p>
+          <p class="red">MNIST Ubuntu 15.04 on GPU with cuDNN：33s</p>
+          <br />
+
+          <p class="red">测试平台3：Dell 7910，E5 2623v3 3.0G *2 /128G/ NVidia Titan X 12G</p>
+          <p class="red">MNIST Ubuntu 15.04 on GPU with cuDNN：23s （真是逆天啊！）</p> 
+          <br />
+
+          <p class="red">对比测试1：2*E5-2620(12CPUs)/128G/Tesla K20M/CUDA5.5/CentOS 6.4</p>
+          <p class="red">MNIST CentOS 6.4 on GPU：294s</p>
+          <p class="red">对比测试2：Tesla K40M/CUDA6.5/ubuntu 14.04</p>
+          <p class="red">MNIST on GPU with cuDNN：30s</p>
+          <p class="red">对比测试3：GTX 660/CUDA6.5/ubuntu 14.04</p>
+          <p class="red">MNIST on GPU with cuDNN：49s</p>
+          <p>对比试验1是一个不太公平的测试，毕竟性能差很大，很可能不单单是由Tesla K20s 和GTX 770带来的，也可能是因为CentOS或者是CUDA5.5(without cuDNN)的影响，但总体上的结论和Caffe官网的<a href="http://caffe.berkeleyvision.org/performance_hardware.html" target="_blank"> reference performance numbers</a> 一致，对于普通用户：GTX的性价比高很多。对比试验2展现了Tesla K40的强大性能，相信对于复杂图像，它应该有更强劲的表现。（感谢香港城市大学 Ph.D Jingjing、南京理工大学 Ph.D JinLu、华中科技大学 MS LiuMaolin 提供的测试环境和测试数据。）</p>
+          <br />
+
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+      </div>
+    
+    <script type="text/javascript" src="../js/copyright.js"></script>
+
+  </div>
+</body>
+</html>

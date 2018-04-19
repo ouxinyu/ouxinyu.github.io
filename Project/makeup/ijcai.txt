@@ -1,0 +1,15 @@
+@article{DBLP:journals/corr/LiuOQWC16,
+  author    = {Si Liu and
+               Xinyu Ou and
+               Ruihe Qian and
+               Wei Wang and
+               Xiaochun Cao},
+  title     = {Makeup like a superstar: Deep Localized Makeup Transfer Network},
+  journal   = {CoRR},
+  volume    = {abs/1604.07102},
+  year      = {2016},
+  url       = {http://arxiv.org/abs/1604.07102},
+  timestamp = {Mon, 02 May 2016 18:22:52 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/journals/corr/LiuOQWC16},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}

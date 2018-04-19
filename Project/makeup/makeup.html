@@ -1,0 +1,79 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Makeup Like a Superstar: Deep Localized Makeup Transfer Network</title>
+    <meta name="description" content="欧新宇老师个人主页，用于自我介绍和为教学、科研服务。" />
+    <meta name="keywords" content="Xin-Yu Ou, xinyu ou, 欧新宇, ouxinyu, shiorioy, 个人主页, 欧老师, 宇宙骑士" />
+    <meta name="author" content="Xin-Yu Ou（欧新宇）" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="main">
+        <div id="site_content">
+            <!-- insert the page content here -->
+            <p id="PaperTitle">Makeup Like a Superstar: Deep Localized Makeup Transfer Network</p>
+            <p id="Author">
+                <a href="http://liusi-group.com" target="_blank">Si Liu</a><span style="vertical-align:super;font-size:10px;">1</span> &nbsp;&nbsp;
+                <a href="http://ouxinyu.github.io" target="_blank">Xinyu Ou</a><span style="vertical-align:super;font-size:10px">1,2,3</span>&nbsp;&nbsp;
+                Ruihe Qian<span style="vertical-align:super;font-size:10px">1,4</span>&nbsp;&nbsp;
+                Wei Wang<span style="vertical-align:super;font-size:10px">1</span>&nbsp;&nbsp;
+                Xiaochun Cao<span style="vertical-align:super;font-size:10px">1</span>
+            </p>
+            <p id="Organization">
+                <span style="vertical-align:super;font-size:10px">1</span>Chinese Academy of Sciences &nbsp;&nbsp;
+                <span style="vertical-align:super;font-size:10px">2</span>Huazhong University of Science and Technology
+            </p>
+            <p id="Organization">
+                <span style="vertical-align:super;font-size:10px">3</span>Yunnan Open University &nbsp;&nbsp;
+                <span style="vertical-align:super;font-size:10px">4</span>University of Electronic Science and Technology of China
+            </p>
+
+            <h1>Introduciton</h1>
+            <p>In this paper, we propose a novel Deep Localized Makeup Transfer Network to automatically recommend the most suitable makeup for a female and synthesis the makeup on her face. Given a before-makeup face, her most suitable makeup is determined automatically. Then, both the before-makeup and the reference faces are fed into the proposed Deep Transfer Network to generate the after-makeup face. Our end-to-end makeup transfer network have several nice properties including: (1) with complete functions: including foundation, lip gloss, and eye shadow transfer; (2) cosmetic specific: different cosmetics are transferred in different manners; (3) localized: different cosmetics are applied on different facial regions; (4) producing naturally looking results without obvious artifacts; (5) controllable makeup lightness: various results from light makeup to heavy makeup can be generated. Qualitative and quantitative experiments show that our network performs much better than the methods of [1] and two variants of NerualStyle [2].</p>
+            <h1>Overview</h1>
+            <p>In our opinion makeup architecture should satisfy five design criteria.</p>
+            <div style="text-align:center"><img src="Images/Architecture.png" width="600" /></div>
+
+            <p>1) <b>With complete functions</b>: we consider three kinds of most commonly used cosmetics, i.e., foundation, eye shadow and lip gloss. Note that our model is quite generic and easily extended to other types of cosmetics. </p>
+            <p>2) <b>Cometic specific</b>: different cosmetics are transferred in their own ways. For example, maintaining the shape is important for the eye shadow rather than for the foundation. </p>
+            <p>3) <b>Localized</b>: all cosmetics are applied locally on their corresponding facial parts. For example, lip gloss is put on the lip while eye shadow is worn the eyelid. </p>
+            <p>4) <b>Naturally looking</b>: the cosmetics need to be seamlessly fused with the before-makeup face. In other words, the after-makeup face should look natural. </p>
+            <p>5) <b>Controllable makeup lightness</b>: we can change the lightness of each type of cosmetic</p>
+            
+            <h1>Makeup Transfer</h1>
+            <p>In our system, there are four main step: Makeup Recommendation, Face Parsing, Eye shadow Warping, and Makeup Transfer.</p>
+            <h2>1. Makeup Recommendation</h2>
+            <div style="text-align:center"><img src="Images/Recommendation.png" width="400" /></div>
+            <h2>2. Face Parsing</h2>
+            <div style="text-align:center"><img src="Images/FaceParsing.png" width="300" /></div>
+            <h2>3. Eye Shadow Warping</h2>
+            <div style="text-align:center"><img src="Images/Warping.png" width="300" /></div>
+            <h2>4. Makeup Transfer (eye shadow and lip gloss transfer)</h2>  
+            <div style="text-align:center"><img src="Images/EyeTransfer.png" width="300" /></div>
+            <div style="text-align:center"><img src="Images/LipTransfer.png" width="300" /></div>         
+
+            <h1>Examples</h1>
+            <h2>1. Lightness Control</h2>
+            <div style="text-align:center"><img src="Images/Lightness.png" width="300" /></div>
+            <h2>2. Different girls wear the same makeup</h2>
+            <div style="text-align:center"><img src="Images/DifferentGirls.png" width="600" /></div>
+            <h2>3. The same girl wears different makeups</h2>
+            <div style="text-align:center"><img src="Images/SameGirls.png" width="600" /></div>
+
+            <h1>Downloads</h1>
+            <p>1. Si Liu, Xinyu Ou, Ruihe Qian, Wei Wang, Xiaochun Cao. Makeup Like a Superstar: Deep Localized Makeup Transfer Network. <i>The 25th International Joint Conference on Artificial Intelligence</i> (<b>IJCAI-2016</b>). New York City. USA. 9th-15th July, 2016 [<a href="http://arxiv.org/abs/1604.07102" target="_blank">arXiv</a>] [<a href="ijcai.txt" target="_blank">bibtex</a>]</p>
+            <p>2.	Xinyu Ou, Si Liu, Xiaochun Cao, Hefei Ling. Beauty eMakeup: A Deep Makeup Transfer System. <i>ACM Multimedia 2016 demo program</i>. Amsterdam, The Netherlands. 15th-19th October, 2016 [<a href="ACMMMslide.pptx" target="_blank">Slide</a>]</p>
+
+
+            <h1>Reference</h1>
+            <p>[1] Dong Guo and Terence Sim. Digital face makeup by example. <i>Computer Vision and Pattern Recognition</i>, pages 73–79, 2009.</p>
+            <p>[2] Leon A Gatys, Alexander S Ecker, and Matthias Bethge. A neural algorithm of artistic style. <i>CoRR</i>, abs/1508.06576, 2015.</p>
+</div>
+    </div>
+</body>
+</html>

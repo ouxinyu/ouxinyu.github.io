@@ -1,0 +1,216 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Xin-Yu Ou（欧新宇）</title>
+    <meta name="description" content="欧新宇老师个人主页，用于自我介绍和为教学、科研服务。" />
+    <meta name="keywords" content="Xin-Yu Ou, xinyu ou, 欧新宇, ouxinyu, shiorioy, 个人主页, 欧老师, 宇宙骑士" />
+    <meta name="author" content="Xin-Yu Ou（欧新宇）" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../style/style.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+        <script type="text/javascript" src="../js/logo_content.js"></script>
+
+
+        <script type="text/javascript" src="../js/menu_content.js"></script>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+        <!-- insert the page content here -->
+        <h1>一个比较好的Asp.net的分页代码，检索速度很快！</h1>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+        <p>一个非常快的基于SQL Server和Asp.net的的分页程序，使用的时候，请根据自己的需要修改必要的代码后再使用，这里我就不写怎么改了，相信用.net的人，应该是没问题的，下面的代码都应该看得懂。*^_^*</p>
+        <p>首先，aspx部分 </p>
+        <pre>
+&lt;asp:GridView ID="gvVisitor" runat="server"&gt; 
+     &lt;Columns&gt; 
+         &lt;asp:TemplateField HeaderText="序号"&gt; 
+         &lt;ItemStyle Width="40px"/&gt; 
+         &lt;ItemTemplate&gt;&lt;%# DataBinder.Eval(Container.DataItem, "ID")%&gt;&lt;/ItemTemplate&gt; 
+         &lt;/asp:TemplateField&gt; 
+         &lt;%-- 类似的TemplateField,省略--%&gt;...... 
+     &lt;/Columns&gt; 
+&lt;/asp:GridView&gt;
+&lt;%-- 以下为分页所使用的链接，含“记录数”“当前页”“页数”“首页”“上一页”“下一页”“尾页”“页码跳转” --%&gt; 
+&lt;div id="StatisticsPages"&gt; 
+    共 &lt;asp:Label ID="lbTotalRecord" runat="server" SkinID="Page"/&gt; 条记录 
+    第 &lt;asp:Label ID="lbCurrentPage" runat="server" SkinID="Page"/&gt; 页 / 共 
+                &lt;asp:Label ID="lbTotalPage" runat="server" SkinID="Page"/&gt; 页 
+    &lt;asp:LinkButton ID="lbFirstPage" runat="server" CommandName="0" Text="首页" /&gt; 
+                &lt;asp:LinkButton ID="lbPreviousPage" runat="server" CommandName="previous" Text="上一页" /&gt; 
+    &lt;asp:LinkButton ID="lbNextPage" runat="server" CommandName="next" Text="下一页" /&gt; 
+                &lt;asp:LinkButton ID="lbLastPage" runat="server" CommandName="last" Text="尾页" /&gt; 
+    转至&lt;asp:TextBox ID="tbGotoPage" runat="server" SkinID="Page" MaxLength="5" AutoPostBack="true" /&gt; 页 
+&lt;/div&gt; 
+            </pre>
+        <br />
+        <p>.........................................这之后是关键的aspx.cs文件</p>
+        <pre>
+const int PageSize = 10;//定义每页显示记录数量 
+int _TotalPage, _TotalRecord, _CurrentPage, _Pages, _JumpPage;
+                //定义几个保存分页参数变量:总页数、总记录数、当前页码、页码数、跳转页码 
+protected void Page_Load(object sender, EventArgs e) 
+{ 
+    if (!IsPostBack) 
+    { 
+        _TotalRecord = Calculate();//通过Calculate()函数获取总记录数 
+        _TotalPage = _TotalRecord / PageSize + OverPage();
+                //计算总页数（加上OverPage()函数防止有余数造成显示数据不完整） 
+        ViewState["PageCounts"] = _TotalRecord / PageSize - ModPage();//保存总页参数到ViewState
+                （减去ModPage()函数防止SQL语句执行时溢出查询范围，可以用存储过程分页算法来理解这句） 
+        ViewState["PageIndex"] = 0;//保存一个为0的页面索引值到ViewState 
+        ViewState["JumpPages"] = _TotalPage;//保存_TotalPage到ViewState，跳页时判断用户输入数是否超出页码范围 
+        //显示lbTotalPage、lbTotalRecord的状态 
+        lbTotalPage.Text = _TotalPage.ToString(); 
+        lbTotalRecord.Text = _TotalRecord.ToString(); 
+        //判断跳页文本框失效 
+        if (_TotalRecord &lt;= PageSize) 
+        { 
+            tbGotoPage.Enabled = false; 
+        } 
+        BindStatisticsData(); 
+    } 
+} 
+//计算余页 
+public int OverPage() 
+{ 
+    int iPages = 0; 
+    if (_TotalRecord % PageSize != 0) 
+        iPages = 1; 
+    else 
+        iPages = 0; 
+    return iPages; 
+} 
+//计算余页(防止SQL语句执行时溢出查询范围) 
+public int ModPage() 
+{ 
+    int iPages = 0; 
+    if (_TotalRecord % PageSize == 0 && _TotalRecord != 0) 
+        iPages = 1; 
+    else 
+        iPages = 0; 
+    return iPages; 
+} 
+//计算总记录数 
+public static int Calculate() 
+{ 
+    int iRecordCount = 0; 
+    StatisticsManageInfo StatisticsManageInfo = new StatisticsManageInfo(); 
+    SqlDataReader dr = StatisticsManageInfo.Visitor_GetAll(); 
+    if(dr.Read()) 
+        iRecordCount = Int32.Parse(dr["Total"].ToString()); 
+    dr.Close(); 
+    return iRecordCount; 
+} 
+//跳页代码 
+private void GotoPage_TextChanged(object sender, EventArgs e) 
+{ 
+    try 
+    { 
+        _JumpPage = (int)ViewState["JumpPages"];//从ViewState中读取可用页数值保存到_JumpPage变量值 
+        //判断用户输入值是否超过可用页数范围值 
+        if (Int32.Parse(tbGotoPage.Text) &gt; _JumpPage || Int32.Parse(tbGotoPage.Text) &lt; 0) 
+        { 
+            Response.Write("&lt;script&gt;alert('您所输入的页码范围超出了总记录数!');&lt;/script&gt;"); 
+        } 
+        else 
+        { 
+            int iInputPage = Int32.Parse(tbGotoPage.Text.ToString()) - 1; 
+            ViewState["PageIndex"] = iInputPage; 
+            BindStatisticsData(); 
+        } 
+    } 
+    catch (Exception ex) 
+    { 
+        Response.Write("&lt;script&gt;alert('" + ex.Message + "');&lt;/script&gt;"); 
+    } 
+} 
+//对四个按钮（首页、上一页、下一页、尾页）返回的CommandName值进行操作 
+private void Page_OnClick(object sender, CommandEventArgs e) 
+{ 
+    _CurrentPage = (int)ViewState["PageIndex"];//从ViewState中读取页码值保存到CurrentPage变量中进行参数运算 
+    _Pages = (int)ViewState["PageCounts"];//从ViewState中读取总页参数运算 
+    String Cmd = e.CommandName; 
+    switch (Cmd) 
+    { 
+        case"next": 
+            _CurrentPage++; 
+            break; 
+        case "previous": 
+            _CurrentPage--; 
+            break; 
+        case "last": 
+            _CurrentPage = _Pages; 
+            break; 
+        default: 
+            _CurrentPage = 0; 
+            break; 
+    } 
+    ViewState["PageIndex"] = _CurrentPage;//将运算后的CurrentPage变量再次保存至ViewState 
+    BindStatisticsData(); 
+} 
+private void BindStatisticsData() 
+{ 
+    _CurrentPage = (int)ViewState["PageIndex"];//从ViewState中读取页码值保存到CurrentPage变量中进行按钮失效运算 
+    _Pages = (int)ViewState["PageCounts"];//从ViewState中读取总页参数进行按钮失效运算 
+    if (_CurrentPage + 1 &gt; 1) 
+    { 
+        lbFirstPage.Enabled = true; 
+        lbPreviousPage.Enabled = true; 
+    } 
+    else 
+    { 
+        lbFirstPage.Enabled = false; 
+        lbPreviousPage.Enabled = false; 
+    } 
+    if (_CurrentPage == _Pages) 
+    { 
+        lbNextPage.Enabled = false; 
+        lbLastPage.Enabled = false; 
+    } 
+    else 
+    { 
+        lbNextPage.Enabled = true; 
+        lbLastPage.Enabled = true; 
+    } 
+    //以下是从数据库获取表数据，并绑定到GridView控件，下面我用了SQLHelper来完成，通过存储过程调用数据库数据。 
+    StatisticsManageInfo StatisticsManageInfo = new StatisticsManageInfo(); 
+    SqlDataReader dr = StatisticsManageInfo.Visitor_GetVisitor(PageSize,_CurrentPage); 
+    gvVisitor.DataSource = dr; 
+    gvVisitor.DataBind(); 
+     
+    lbCurrentPage.Text = (_CurrentPage + 1).ToString(); 
+    tbGotoPage.Text = (_CurrentPage + 1).ToString(); 
+} 
+//以下部分，是初始化控件的，分页代码原本没有这一段，但是运行不了，所以后来我加上的。原因不明，待研究。 
+#region Web 窗体设计器生成的代码 
+override protected void OnInit(EventArgs e) 
+{ 
+    InitializeComponent(); 
+    base.OnInit(e); 
+} 
+private void InitializeComponent() 
+{ 
+    this.lbFirstPage.Command += new CommandEventHandler(this.Page_OnClick); 
+    this.lbLastPage.Command += new CommandEventHandler(this.Page_OnClick); 
+    this.lbNextPage.Command += new CommandEventHandler(this.Page_OnClick); 
+    this.lbPreviousPage.Command += new CommandEventHandler(this.Page_OnClick); 
+    this.tbGotoPage.TextChanged += new System.EventHandler(this.GotoPage_TextChanged); 
+    this.Load += new System.EventHandler(this.Page_Load); 
+} 
+#endregion 
+            </pre>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+    </div>
+    
+    <script type="text/javascript" src="../js/copyright.js"></script>
+
+  </div>
+</body>
+</html>

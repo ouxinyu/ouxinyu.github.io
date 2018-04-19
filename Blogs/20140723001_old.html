@@ -1,0 +1,320 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Xin-Yu Ou（欧新宇）</title>
+    <meta name="description" content="欧新宇老师个人主页，用于自我介绍和为教学、科研服务。" />
+    <meta name="keywords" content="Xin-Yu Ou, xinyu ou, 欧新宇, ouxinyu, shiorioy, 个人主页, 欧老师, 宇宙骑士" />
+    <meta name="author" content="Xin-Yu Ou（欧新宇）" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../style/style.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+        <script type="text/javascript" src="../js/logo_content.js"></script>
+
+
+        <script type="text/javascript" src="../js/menu_content.js"></script>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+        <!-- insert the page content here -->
+        <h1>Caffe + Ubuntu 14.04 + CUDA 6.5 新手安装配置指南</h1>
+        <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+	<p style="color:red;font-size:14px;"><strong><i>特别说明：本文为作者亲自实验完成，但仅限用于学术交流使用，使用本指南造成的任何不良后果由使用者自行承担，与本博主无关，谢谢！</i></strong></p>
+	<p style="color:blue;">最后更新时间：2014年9月23日，使用当前最新版Caffe-Master完成，特别加入了cuDNN组件。</p>
+
+        <p>洋洋洒洒一大篇，就没截图了，这几天一直在折腾这个东西，实在没办法，不想用Linux但是，为了Caffe，只能如此了，安装这些东西，遇到很多问题，每个问题都要折磨很久，大概第一次就是这样的。想想，之后应用，应该还会遇到很多问题吧，不过没办法了，骑虎难下！！这里有个建议是，如果将来要做大数据集，最好事先给Linux留多点空间，比如Imagenet，估计500G都不为过。另外，请阅读完，至少一个部分再进行动手操作，避免多余的工作，写作能力有限，尽请见谅。</p>
+        <p>这篇安装指南，适合零基础，新手操作，请高手勿要吐槽！</p>
+        <p>简单介绍一下：Caffe，一种Convolutional Neural Network的工具包，和Alex的cuda-convnet功能类似，但各有特点。都是使用C++ CUDA进行底层编辑，Python进行实现，原作不属于Ubuntu 12，也有大神发布了Windows版，但其他相关资料较少，不适合新手使用，所以还是Ubuntu的比较适合新手。（相对而言）</p>
+        <p>本文主要包含5个部分，包括：</p>
+	<ul>
+		<li><strong>第一部分 Linux安装</strong></li>
+		<li><strong>第二部分 nVidia驱动和CUDA Toolkit的安装和调试</strong></li>
+		<li><strong>第三部分 Caffe的安装和测试</strong></li>
+		<li><strong>第四部分 Python安装和调试</strong></li>
+		<li><strong>第五部分 Matlab安装和调试</strong></li>
+	</ul>
+        <br />
+        <h1 style="color:navy;">第一部分 Linux安装</h1>
+        <p>Linux的安装，如果不是Linux粉，只是必须，被迫要用它来作作科研什么的，建议安装成双系统，网上方法很多，这里我就不详细写了，安装还算是傻瓜式的，和windows的过程类似，至于语言，如果觉得难度还不够大的话，完全可以装E文版的，甚至日文，德文~~~，我是装的简体中文版，我总共用分出的100G的空间来安装Ubuntu 14.04，这个版本是最新的版本，有个好处是，可以直接访问Windows8.1的NTFS分区，不用做额外的操作，而且支持中文，例如：$ cd /media/yourname/分区名字/文件夹名，当然GUI就更方便了.</p>
+        <p>我的分区设置如下：</p>
+        <p class="red">根分区： \  50G，</p>
+        <p class="red">Swap交换分区：16G ，这里，我设置和我的内存一样，据说小于16G的内存，就设置成内存的1.5-2倍</p>
+        <p class="red">boot分区：200M</p>
+        <p class="red">Home分区：剩余的空间，鉴于Imagenet，PASCAL VOC之类的大客户，建议500G，至少300G以上。</p>
+        <p><strong>PS1：网速慢（Linux的绝招^_^）</strong></p>
+        <p>Ubuntu下访问网页总是很慢，让我深感它和Windows的差距，可是为什么还是有那么多人向往它呢？下面的办法可以解决部分访问的问题，特别是国外的网站，但是遇到一些调用了被墙的网站的东西，比如google的字体，还是没办法，仍然会在哪里转圈圈。这里似乎是操作系统的机制引起，Windows的浏览器会忽略那些错误，而Ubuntu下的浏览器会不停尝试。废话少说，部分问题的解决办法（经过一段时间的测试，感觉完全没有用，不知道为什么Linux下上网，就是效果很差，相对于Windows来说，简直是几千倍的差距）：</p>
+        <p class="navyBold">$ sudo apt-get install dnsmasq</p>
+        <p class="navyBold">$ sudo gedit /etc/dnsmasq.conf</p>
+        <p class="red">找到 # resolv-file=</p>
+        <p class="red">修改为：resolv-file=/etc/resolv.dnsmasq.conf</p>
+        <p class="navyBold">$ sudo cp /etc/resolv.conf /etc/resolv.dnsmasq.conf</p>
+        <p class="navyBold">$ sudo gedit /etc/resolv.conf</p>
+        <p>删除所有域名服务器，保留：nameserver 127.0.0.1</p>
+        <p><strong> PS2：启动分区错误</strong></p>
+        <p> 基本上，重装起来，都会破坏原来的启动分区表，还原Windows分区的一个简单办法：</p>
+        <p class="navyBold">$ etc/default/grub</p>
+        <p class="red">设置：GRUB_DEFAULT = 2</p>
+        <p class="navyBold">$ sudo update-grub</p>
+        <p>该方法适用于安装双系统后，"看得到Linux，看不到Windows”的情况，反过来的话，请大家自己百度吧。</p>
+
+        <h1 style="color:navy;">第二部分：nVidia驱动和CUDA Toolkit的安装和调试</h1>
+        <p>PS：这里其实可以参考nVidia 官方提供的CUDA安装手册，非常相近，32页的，不过是全英文的，我就是参考这个文档完成后面的配置和验证工作。https://developer.nvidia.com/rdp/cuda-65-rc-toolkit-download#linux。一般要输入你的用户名和密码，就是下载6.5的那个账号。 </p>
+        <p class="Bold">一、Verify You Have a CUDA-Capable GPU</p>
+        <p>执行下面的操作，然后验证硬件支持GPU CUDA，只要型号存在于https://developer.nvidia.com/cuda-gpus，就没问题了</p>
+        <p class="navyBold">$ lspci | grep -i nvidia</p>
+        <p class="Bold">二、Verify You Have a Supported Version of Linux</p>
+        <p class="navyBold">$ uname -m && cat /etc/*release</p>
+        <p>重点是“x86_64”这一项，保证是x86架构，64bit系统</p>
+        <p class="Bold">三、Verify the System Has gcc Installed</p>
+        <p class="navyBold">$ gcc --version</p>
+        <p>没有的话就先安装吧，这个是必须的用来编译CUDA Toolkit，不过Ubuntu 14.04是默认有的</p>
+        <p class="Bold">四、Download the NVIDIA CUDA Toolkit</p>
+        <p>下载地址：https://developer.nvidia.com/cuda-toolkit </p>
+        <p>验证地址：https://developer.nvidia.com/rdp/cuda-rc-checksums </p>
+        <p class="navyBold">$ md5sum filename</p>
+        <p>例如：md5sum cuda_6.5.11_rc_linux_64.run ，这个文件的正确 md5 = a47b0be83dea0323fab24ca642346351</p>
+        <p>这个感觉蛮重要，我第一次安装的时候md5就没通过，强制安装，结果就有问题，后面重新下载了再安装了一次</p>
+        <p class="Bold">五、Handle Conflicting Installation Methods</p>
+        <p>根据官网介绍，之前安装的版本都会有冲突的嫌疑</p>
+        <p>所以，之前安装的Toolkit和Drievers就得卸载，屏蔽，等等</p>
+        <p class="Bold">六、Graphical Interface Shutdown</p>
+        <p>退出GUI，也就是X-Win界面，操作方法是：同时按：CTRL+ALT+F1（F2-F6），切换到TTY1-6命令行模式。</p>
+        <p>关闭桌面服务：</p>
+        <p class="navyBold">$ sudo stop lightdm</p>
+        <p class="Bold">七、Interaction with Nouveau</p>
+        <p>Nouveau是一个开源的显卡驱动，Ubuntu 14.04 默认安装了，但是它会影响nVidia驱动的安装，所以只有请他回老家了，sorry！</p>
+        <p>1. 将nouveau添加到黑名单，防止它启动</p>
+        <p class="navyBold">$ cd /etc/modprobe.d</p>
+        <p class="navyBold">$ sudo vi nvidia-graphics-drivers.conf</p>
+        <p class="red">写入：blacklist nouveau</p>
+        <p>保存并退出: wq!</p>
+        <p class="navyBold">检查：$ cat nvidia-graphics-drivers.conf</p>
+        <p>2. 对于：/etc/default/grub，添加到末尾。</p>
+        <p class="navyBold">$ sudo vi /etc/default/grub</p>
+        <p class="red">末尾写入：rdblacklist=nouveau nouveau.modeset=0</p>
+        <p>保存并退出: wq!</p>
+        <p class="navyBold">检查：$ cat /etc/default/grub</p>
+        <p>3. 官网提供的操作：(感觉上这一小步，可以略过，不执行，执行了也会报错)</p>
+        <p class="navyBold">$ sudo mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-nouveau.img</p>
+        <p>然后重新生成initrd文件</p>
+        <p class="navyBold">$ sudo dracut /boot/initramfs-$(uname -r).img $(uname -r)</p>
+        <p class="navyBold">$ sudo update-initramfs -u  </p>
+        <p>上面那条是nVidia官方提供的命令，不知道为什么在我这里会提示dracut是不存在的命令，也许是版本问题，或者少了什么包，不过无所谓，第二条命令也可以搞定，应该是一样的功能。（如果我理解错误，欢迎小朋友们指教，我会改正）</p>
+        <p>PS：其实，这一连串的工作，有点没搞懂，因为有的命令和文件不存在。原理理解了，但是步骤还是有点模糊，不过，我是照上面的操作完成了，后面的也没出问题，应该应付过去了吧。</p>
+        <p class="Bold">八、Installation</p>
+        <p>默认情况下，可以跳过显卡驱动的安装，直接安装CUDA，因为它包含了Drivers,Toolkit和Sample三个部分，但是如果出现问题，可以尝试二次安装CUDA或者利用官方的显卡驱动，来进行处理。GTX显卡驱动的下载地址如下（Tesla版的驱动，请大家自己去nVidia的官网下载）：</p>
+        <p>下载地址：http://www.geforce.cn/drivers </p>
+        <p class="navyBold">$ sudo sh ./NVIDIA-Linux-x86_64-340.24.run (Optional)</p>
+        <p>切换到cuda_6.5.11_rc_linux_64.run 所在的目录，然后执行安装命令：</p>
+        <p class="navyBold">$ sudo sh cuda_6.5.11_rc_linux_64.run</p>
+        <p>再次提醒，安装前一定要执行 md5sum ，我第一次安装就是执行了，发现不一样，然后没有理它直接安装，导致安装的Sumary里显示Driver成功，Toolkit和Samples失败，第二次在装就好了。</p>
+        <p>至于如果发现md5检测不一致，怎么办？别逗了，去nVidia重新下载就行了，地球人都知道，别无限循环就好^_^!</p>
+        <p>这里会一路问你各种问题，基本上就是Accept-yes-Enter-yes-Enter-yes-Enter，  其实就是让你接受协议，然后安装的默认位置确认等等，recruit就别自定义安装位置了，默认才是天堂。</p>
+        <p>安装完会提示丢失了四个库：libGLU.so, libx11.so, libxmu.so, libxi.so 这个木有关系，下一步就是解决这个问题的。</p>
+        <p class="Bold">九、Extra Libraries</p>
+        <p>安装一些必要的库文件，譬如：OpenGL (e.g., Mesa), GLU, GLUT, and X11 (including Xi, Xmu, and GLX).</p>
+        <p class="navyBold">$ sudo apt-get install freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libgl1-mesa-glx libglu1-mesa libglu1-mesa-dev</p>
+        <p>这个可以切换到GUI界面在操作，要不然那些提示信息，都是乱码，什么都看不懂，不过如果你的系统是E文的，这句话忽略。</p>
+        <p>这里，保证网络不要中断就行了，吐槽一下：该死的锐捷认证，这Ubuntu都出到14.04了，你12版本的客户端还没出来，害我之前折腾了1整天网络，现在被迫沦落到蹭网族，有点想吐的感觉！！！！</p>
+        <p class="Bold">十、驱动装完了，可以回到GUI界面了，也可以继续留这里玩文本。。。</p>
+        <p class="navyBold">$ sudo start lightdm</p>
+        <p class="Bold">十一、POST-INSTALLATION ACTIONS</p>
+        <p>这一步就是验证一下安装是否正确，编译和完成以下CUDA自带的程序，建议做一下~</p>
+        <p>1. Environment Setup</p>
+        <p class="navyBold">$ export PATH=/usr/local/cuda-6.5/bin:$PATH</p>
+        <p class="navyBold">$ export LD_LIBRARY_PATH=/usr/local/cuda-6.5/lib64:$LD_LIBRARY_PATH</p>
+        <p>2. (Optional) Install Writable Samples</p>
+        <p class="navyBold">$ cuda-install-samples-6.5.sh </p>
+        <p>安装到Home下，搞定了之后可以在GUI下调整一下，主要是前面的要求，会有一个Sample的文件夹 NVIDIA_CUDA-6.5_Samples在Home的根目录下就ok了。因为后面编译测试各方面什么的方便。其实如果之前安装CUDA驱动和Toolkit一切正常，这一步基本可以省略，应该会自动建立，但检查一下无妨。</p>
+        <p>3. Verify the Installation</p>
+        <p>a. 验证驱动的版本，其实主要是保证驱动程序已经安装正常了</p>
+        <p class="navyBold">$ cat /proc/driver/nvidia/version</p>
+        <p>b. Compiling the Examples</p>
+        <p class="navyBold">$ nvcc -V</p>
+        <p>不出意外的话应该会提示，nvcc没有安装，其实就是，nvidia-cuda-toolkit的编译器没有安装完整，总之，根据提示继续就好了</p>
+        <p class="navyBold">$ sudo apt-get install nvidia-cuda-toolkit</p>
+        <p>我这里还差接近400MB的文件要下载，它是全自动的，所以只要保证网络畅通，一杯咖啡在手，然后就可以XXX了。可悲的是，我这里天色已晚，隔壁的Wifi也断了，笔记本的360随身Wifi连上一会也断了，只有收东西回宿舍，明天再继续了。看看表，靠，00：03，今天打卡时间又错过了。</p>
+        <p>次日，这里安装完，就可以编译了，切换目录到~/NVIDIA_CUDA-6.5_Samples，记性没问题的话，应该还记得它是安装在Home文件夹的，穿越过去就好了，然后执行：</p>
+        <p class="navyBold">$ cd /home/username/NVIDIA_CUDA-6.5_Samples</p>
+        <p class="navyBold">$ make</p>
+        <p>c. Running the Binaries</p>
+        <p>运行编译好的文件，看看设备的基本信息和带宽信息：</p>
+        <p class="navyBold">$ cd /bin/x86_64/linux/release</p>
+        <p class="navyBold">$ ./deviceQuery</p>
+        <p class="navyBold">$ ./bandwidthTest</p>
+        <p>PS：如果测试的时候出现说运行版驱动和实际驱动不符（英文原文不记得了，没记下来），原因可能是因为后面安装的nvidia-cuda-toolkit更新了配置文件，所以和原始的Cuda-Samples的配置或者是驱动程序有变化，所以检测无法编译通过。考虑下面的解决方法：</p>
+        <p>1. 卸载现有驱动</p>
+        <p class="navyBold">$ sudo nvidia-installer --uninstall </p>
+        <p>2. 下载合适版本的驱动，并安装：</p>
+        下载地址：http://www.geforce.cn/drivers </p>
+        <p class="navyBold">$ sudo sh ./NVIDIA-Linux-x86_64-340.24.run</p>
+        <p>3. 重装CUDA Toolkit</p>
+        <p class="navyBold">$ sudo sh cuda_6.5.11_rc_linux_64.run</p>
+        <p>好了，到这里所有nVidia CUDA的安装就结束了，下面看看Caffe如何安装</p>
+        <br />
+
+        <h1 style="color:navy;">第三部分 Caffe的安装和测试</h1>
+        <p>对于Caffe的安装严格遵照官网的要求来：http://caffe.berkeleyvision.org/installation.html </p>
+        <p class="Bold">一、安装BLAS</p>
+        <p>这里可以选择（ATLAS，MKL或者OpenBLAS），我这里使用MKL，首先下载并安装英特尔® 数学内核库 Linux* 版MKL，下载链接是：https://software.intel.com/en-us/intel-education-offerings，可以下载Student版的，先申请，然后会立马收到一个邮件（里面有安装序列号），打开照着下载就行了。下载完之后，要把文件解压到home文件夹(或直接把tar.gz文件拷贝到home文件夹,为了节省空间，安装完记得把压缩文件给删除喔～)，或者其他的ext4的文件系统中。 </p>
+        <p>接下来是安装过程，先授权，然后安装：</p>
+        <p class="navyBold">$ tar zxvf cpp_studio_xe_2013_sp1_update3.tar.gz  （如果你是直接拷贝压缩文件过来的）</p>
+        <p class="navyBold">$ chmod a+x /home/username/cpp_studio_xe_2013_sp1_update3 -R</p>
+        <p class="navyBold">$ sudo ./install_GUI.sh</p>
+        <p>PS: 这里安装的时候，我遇到一些插曲，先在这里特别提醒大家一下，避免在犯错，这些都是我安装的时候，遇到的"little bug"。</p>
+        <p>1. 一个很2的问题，在启动linux的时候，手贱点了一下系统自动更新，可能正好更新到某个关键组件，授权的时候，始终无效，这个大概解决就是记得更新完，重启，然后关机，我弄的时候，重启也没用。</p>
+        <p>2. 记得把解压后的studio_xe软件包丢到home下，或者干脆直接在home里解压，注意这里它是保存在home/username, 这里的username是你的用户名。这一步主要是，让安装程序处于linux的文件系统中，为了修改权限做保证。</p>
+        <p>3. 使用chmod对文件夹及其子文件进行授权，安装程序是install_GUI.sh，它调用了install.sh，接下来又调用了一连串的文件，这些文件都必须具有可执行的权限，所以，你懂了~照着上面的步骤就好了</p>
+        <p>4. 安装的时候，可以安装到root权限下，或者sudo权限，我是装在root权限下，避免麻烦，这时就必须确保已经为root设置过密码了，然后会让你输入你申请的时候发给你的序列号。没设置的话，执行：</p>
+        <p class="navyBold">$ sudo passwd root</p>
+        <p>5. Everything is OK！</p>
+        <p>PS2：我不会告诉你，我第一次安装的时候，不仅仅装了Studio XE，还装了MKL，也装了OpenBLAS，为了装OpenBLAS还装来gFortran编译器，因为一直编译Caffe不通过，其实这都是白费功夫，都是没有认真读官网的说明导致的。至于这集中库的性能，应该是MKL>OpenBLAS>ATLAS，官网的介绍也提到。在装完MKL，需要做的一件事是：SET BLAS := mkl in Makefile.config，这个我在后面安装Caffe到时候会写。</p>
+        <p class="Bold">二、MKL与CUDA的环境设置</p>
+        <p>文件夹切换到/etc/ld.so.conf.d，并进行如下操作</p>
+        <p>1. 新建intel_mkl.conf， 并编辑之：</p>
+        <p class="navyBold">$ cd /etc/ld.so.conf.d</p>
+        <p class="navyBold">$ sudo vi intel_mkl.conf</p>
+        <p class="red">/opt/intel/lib/intel64</p>
+        <p class="red">/opt/intel/mkl/lib/intel64</p>
+        <p>2. 新建cuda.conf，并编辑之：</p>
+        <p class="navyBold">$ sudo vi cuda.conf</p>
+        <p class="red">/usr/local/cuda/lib64</p>
+        <p class="red">/lib</p>
+        <p>3. 完成lib文件的链接操作，执行：</p>
+        <p class="navyBold">$ sudo ldconfig -v</p>
+        <p class="Bold">三、安装OpenCV</p>
+        <p>1. 下载地址：https://github.com/jayrambhia/Install-OpenCV，如果觉得难度不够的话，可以选择官网的安装包：http://opencv.org/，我这里是根据大神编译过的版本进行安装的。 </p>
+        <p>2. 切换到文件保存的文件夹，然后安装依赖项：</p>
+        <p class="navyBold">sudo ./dependencies.sh</p>
+        <p>3. 安装openCV，因为不知道有什么区别，所以就安装最新版opencv2_4_8吧，有偏好可以根据自己的要求进行设置：</p>
+        <p class="navyBold">sudo sh ./opencv2_4_8.sh</p>
+        <p>保证网络畅通，因为软件需要联网这里时间较长，请耐心等待。。。，所以就安</p>
+        <p class="Bold">四、安装其他依赖项</p>
+        <p>1. Google Logging Library（glog），下载地址：https://code.google.com/p/google-glog/，然后解压安装： </p>
+        <p class="navyBold">$ tar zxvf glog-0.3.3.tar.gz</p>
+        <p class="navyBold">$ ./configure</p>
+        <p class="navyBold">$ make</p>
+        <p class="navyBold">$ sudo make install</p>
+        <p class="red">如过没有权限就chmod a+x glog-0.3.3 -R , 或者索性 chmod 777 glog-0.3.3 -R , 装完之后，这个文件夹就可以kill了。</p>
+        <p>2. 其他依赖项，确保都成功</p>
+        <p class="navyBold">$ sudo apt-get install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libboost-all-dev libhdf5-serial-dev</p>
+        <p>如果安装过程中出现错误，E: Sub-process /usr/bin/dpkg returned an error code (1)，可能是因为sudo apt-get install出现到意外，不用着急，可以试试这个解决办法：</p>
+        <p class="navyBold">$ cd /var/lib/dpkg</p>
+        <p class="navyBold">$ sudo mv info info.bak</p>
+        <p class="navyBold">$ sudo mkdir info</p>
+        <p class="navyBold">$ sudo apt-get --reinstall install libprotobuf-dev libleveldb-dev libsnappy-dev libopencv-dev libboost-all-dev libhdf5-serial-dev</p>
+	<p>如果使用的是2014年9月之后的新版Caffe,对于ubuntu 14.04来说，需要安装以下依赖文件：</p>
+        <p class="navyBold">$ sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev protobuf-compiler</p>
+
+        <p class="Bold">五、安装Caffe并测试</p>
+        <p>1. 切换到Caffe的下载文件夹，然后执行：</p>
+        <p class="navyBold">$ cp Makefile.config.example Makefile.config</p>
+        <p>修改新生成的Makefile.config文件，修改“BLAS := mkl”，这个非常重要。</p>
+	    <p>希望使用nVidia开发的cuDNN来加速Caffe模型运算的同学，在安装完cuDNN之后，确保Makefile.config文件中的USE_CUDNN := 1处于启用状态。幸运的是，新版的Caffe已经默认集成了cuDNN的库文件，不需要做额外的设置了。</p>
+	    <p class"red"><strong>cuDNN的安装方法如下：</strong></p>
+	    <p><a href="http://devblogs.nvidia.com/parallelforall/accelerate-machine-learning-cudnn-deep-neural-network-library/" target="_blank"/>cuDNN Introdution and Download</a></p>
+	    <p class="navyBold">$ sudo cp cudnn.h /usr/local/include</p>
+	    <p class="navyBold">$ sudo cp libcudnn.so /usr/local/lib</p>
+	    <p class="navyBold">$ sudo cp libcudnn.so.6.5 /usr/local/lib</p>
+	    <p class="navyBold">$ sudo cp libcudnn.so.6.5.18 /usr/local/lib</p>
+        <p>链接cuDNN的库文件</p>
+        <p class="navyBold">$ sudo ln -sf /usr/local/lib/cudnn.so.6.5.18 /usr/local/lib/libcudnn.so.6.5</p>
+        <p>不做链接，可能会出现这个报错：“./build/tools/caffe: error while loading shared libraries: libcudnn.so.6.5: cannot open shared object file: No such file or directory”那是因为cuDNN没有链接成功，只能做一下硬链接。</p>
+
+	    <p>OK,下面可以编译caffe-master了！！！</p>
+        <p class="navyBold">$ make all</p>
+        <p class="navyBold">$ make test</p>
+        <p class="navyBold">$ make runtest </p>
+        <p>错误Fixed：</p>
+        <p>1. 如果提示： make: protoc: 命令未找到，那是因为protoc没有安装，安装一下就好了。</p>
+        <p class="navyBold">$ sudo apt-get install protobuf-c-compiler protobuf-compiler</p>
+        <p>2. (该问题已经在9月以后的Caffe中得到作者修复)提示“src/caffe/util/math_functions.cu(140): error: calling a host function("std::signbit ") from a globalfunction("caffe::sgnbit_kernel ") is not allowed”</p>
+        <p>解决办法：</p>
+        <p class="red">修改  ./include/caffe/util/math_functions.hpp 224行</p>
+        <p class="red">删除(注释)：using std::signbit;</p>
+        <p class="red">修改：DEFINE_CAFFE_CPU_UNARY_FUNC(sgnbit, y[i] = signbit(x[i]));</p>
+        <p class="red">为：DEFINE_CAFFE_CPU_UNARY_FUNC(sgnbit, y[i] = std::signbit(x[i]));</p>
+        <p>得到作者，大神Yangqing Jia的回复，解决方法如上，没有二致。</p>
+
+        <p class="Bold">六、使用MNIST数据集进行测试</p>
+        <p>Caffe默认情况会安装在$CAFFE_ROOT，就是解压到那个目录，例如：$ home/username/caffe-master，所以下面的工作，默认已经切换到了该工作目录。下面的工作主要是，用于测试Caffe是否工作正常，不做详细评估。具体设置请参考官网：http://caffe.berkeleyvision.org/gathered/examples/mnist.html </p>
+        <p>1. 数据预处理</p>
+        <p>可以用下载好的数据集，也可以重新下载，我网速快，这里就偷懒直接下载了，具体操作如下：</p>
+        <p class="navyBold">$ cd data/mnist</p>
+        <p class="navyBold">$ sudo sh ./get_mnist.sh</p>
+        <p>2. 重建LDB文件，就是处理二进制数据集为Caffe识别的数据集，以后所有的数据，包括jpe文件都要处理成这个格式</p>
+        <p class="navyBold">$ cd examples/mnist</p>
+        <p class="navyBold">$ sudo sh ./create_mnist.sh</p>
+        <p>生成mnist-train-leveldb/ 和 mnist-test-leveldb/文件夹，这里包含了LDB格式的数据集</p>
+	<p>PS: 这里可能会遇到一个报错信息：</p>
+	<p class="red">Creating lmdb...</p>
+	<p class="red">./create_mnist.sh: 16: ./create_mnist.sh: build/examples/mnist/convert_mnist_data.bin: not found</p>
+	<p>解决方法是，直接到Caffe-master的根目录执行，实际上新版的Caffe，基本上都得从根目录执行。</p>
+	<p class="navyBold">~/caffe-master$ sudo sh examples/mnist/create_mnist.sh</p>
+		
+
+        <p>3. 训练mnist</p>
+        <p class="navyBold">$ sudo sh examples/mnist/train_lenet.sh</p>
+        <p>至此，Caffe安装的所有步骤完结，下面是一组简单的数据对比，实验来源于MNIST数据集，主要是考察一下不同系统下CPU和GPU的性能。可以看到明显的差别了，虽然MNIST数据集很简单，相信复杂得数据集，差别会更大，Ubuntu+GPU是唯一的选择了。</p>
+        <p class="red">测试平台：i7-4770K/16G/GTX 770/CUDA 6.5</p>
+        <p class="red">MNIST Windows8.1 on CPU：620s</p>
+        <p class="red">MNIST Windows8.1 on GPU：190s</p>
+        <p class="red">MNIST Ubuntu 14.04 on CPU：270s </p>
+        <p class="red">MNIST Ubuntu 14.04 on GPU：160s</p>
+        <p class="red">MNIST Ubuntu 14.04 on GPU with cuDNN：35s</p>
+        <p class="red">Cifar10_full on GPU wihtout cuDNN：73m45s = 4428s　<i>（Iteration 70000）</i></p>
+        <p class="red">Cifar10_full on GPU with cuDNN：20m7s = 1207s　<i>（Iteration 70000）</i></p>
+        <br />
+
+        <h1 style="color:navy;">第四部分 Python安装和调试</h1>
+        <p>1. 安装caffe必须的一些依赖项：</p>
+        <p class="navyBold">$ sudo apt-get install python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-gflags Cython ipython</p>
+        <p>2. 配置路径，编辑Makefile.config</p>
+        <p class="red">PYTHON_INCLUDE := /usr/include/python2.7 </p>
+        <p class="red">PYTHON_LIB := /usr/local/lib</p>
+        <p class="red">INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include</p>
+        <p class="red">LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib</p>
+        <p>3. 这里非常重要的是，为了确保支持Caffe Notebook里的程序，需要使用到IDE环境，并且支持iPython输出。 </p>
+        <br />
+
+        <h1 style="color:navy;">第五部分 Matlab安装和调试</h1>
+        <p class="Bold">1.下载</p>
+        <p>由于该软件为商业软件，请大家自行寻找，安装学习，并确保不使用做商业目的，下载24小时删除......</p>
+        <p class="Bold">2. 预准备</p>
+        <p>选择Mathworks.Matlab.R2014a.Unix.iso - 右键 - 使用磁盘映像挂载器打开”</p>
+        <p>进入装载的虚拟光盘，拷贝全部文件至home/Matlab 文件夹</p>
+        <p>(PS：我的原则是能GUI就GUI，喜欢CMD的可以参照执行) </p>
+        <p>复制Crack/install.jar至 home/Matlab/java/jar/ 并覆盖源文件</p>
+        <p class="Bold">3. 授权安装文件夹</p>
+        <p class="navyBold">$ chmod a+x Matlab -R</p>
+        <p class="Bold">4. 安装 </p>
+        <p class="navyBold">$ sudo ./install  </p>
+        <p>选项：不使用Internet安装</p>
+        <p>序列号： 12345-67890-12345-67890 </p>
+        <p>默认路径：/usr/local/MATLAB/R2014a </p>
+        <p>激活文件：license_405329_R2014a.lic</p>
+        <p>拷贝 libmwservices.so 至 /usr/local/MATLAB/R2014a/bin/glnxa64</p>
+        <p>安装完毕，程序默认启动路径：</p>
+        <p class="navyBold">$ sudo MATLAB/R2014a/bin/matlab </p>
+        <p class="Bold">5.创建快捷方式 </p>
+        <p>1. 软件中心搜索matlab </p>
+        <p>2. 选择安装目录：/usr/local/MATLAB/R2014a</p>
+        <p class="Bold">6.配置Caffe</p>
+        <p>修改文件：Makefile.config</p>
+        <p class="red">MATLAB_DIR := /usr/local/MATLAB/R2014a</p>
+        <p class="Bold">7.编译Matlab用到的caffe文件</p>
+        <p class="navyBold">$ make matcaffe</p>
+          <p style="text-align:right;"><a href="../Blog.html">返回</a></p>
+    </div>
+    
+    <script type="text/javascript" src="../js/copyright.js"></script>
+
+  </div>
+</body>
+</html>
