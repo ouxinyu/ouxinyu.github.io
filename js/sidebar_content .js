@@ -1,5 +1,6 @@
 ﻿document.write("<div class=\"sidebar\">");
 document.write("<h3>Course</h3>");
+document.write("<p><a href=\"http://course.ouxinyu.cn\\DiscreteMathematics\\Default.html\" target=\"\_blank\">离散数学</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\GenericCabling\\Default.html\" target=\"\_blank\">综合布线技术</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\IoT\\Default.html\" target=\"\_blank\">物联网概论</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\Dreamweaver\\Default.html\" target=\"\_blank\">数码绘画基础H5</a> <i style=\"color:gray;\">[2017]</i></p>");
