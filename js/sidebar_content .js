@@ -4,8 +4,8 @@ document.write("<p><a href=\"http://course.ouxinyu.cn\\DiscreteMathematics\\Defa
 document.write("<p><a href=\"http://course.ouxinyu.cn\\GenericCabling\\Default.html\" target=\"\_blank\">综合布线技术</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\IoT\\Default.html\" target=\"\_blank\">物联网概论</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\Dreamweaver\\Default.html\" target=\"\_blank\">数码绘画基础H5</a> <i style=\"color:gray;\">[2017]</i></p>");
-
-
+document.write("<p><a href=\"https://nbviewer.jupyter.org\\github\\ouxinyu\\Teaching\\tree\\master\\MachineLearning\\index.ipynb\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
+document.write("<p><a href=\"https://nbviewer.jupyter.org\\github\\ouxinyu\\Teaching\\tree\\master\\ComputerMath\\index.ipynb\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
 
 
 document.write("<p><a href=\"Blogs\\20150413001.html\">SPP-net + Windows 8.1 安装配置指南</a> <i style=\"color:gray;\">[2015-04-13]</i></p>")
