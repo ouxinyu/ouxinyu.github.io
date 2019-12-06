@@ -1,4 +1,10 @@
-﻿document.write("<div class=\"sidebar\">");
+﻿/*
+* @Author: Your name
+* @Date:   2019-12-06 10:52:27
+* @Last Modified by:   Your name
+* @Last Modified time: 2019-12-06 10:52:28
+*/
+document.write("<div class=\"sidebar\">");
 
 document.write("<div style=\"text-align:left;width:100%;\">");
 document.write("<iframe name=\"weather_inc\" src=\"http://i.tianqi.com/index.php?c=code&id=7\" width=\"220\" height=\"90\" frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\"></iframe>");
@@ -24,7 +30,7 @@ document.write("<li>QQ：14777591</li>");
 document.write("</ul>");
 document.write("<h3>My Links</h3>");
 document.write("<ul>");
-document.write("<li><a href=\"http://www.scholarmate.com/profile/xinyuou1 \" target=\"_blank\"> ScholarMate</a></li>");
+document.write("<li><a href=\"http://xueshu.baidu.com/scholarID/CN-B48JVCAJ \" target=\"_blank\"> 百度学者</a></li>");
 document.write("<li><a href=\"PrimarySchool/home.html\" target=\"_blank\"> 明通小学杨老师班</a></li>");
 document.write("<li><a href=\"https://github.com/ouxinyu/oxyToolkit \" target=\"_blank\"> MyCodes</a></li>");
 document.write("</ul>");
