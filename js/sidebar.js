@@ -1,9 +1,9 @@
 ﻿/*
-* @Author: Your name
-* @Date:   2019-12-06 10:52:27
-* @Last Modified by:   Your name
-* @Last Modified time: 2020-01-08 14:14:50
-*/
+ * @Author: Your name
+ * @Date:   2019-12-06 10:52:27
+ * @Last Modified by:   Your name
+ * @Last Modified time: 2020-01-08 14:14:50
+ */
 document.write("<div class=\"sidebar\">");
 
 document.write("<div style=\"text-align:left;width:100%;\">");
@@ -16,7 +16,7 @@ document.write("<p><a href=\"http://course.ouxinyu.cn\\DiscreteMathematics\\Defa
 document.write("<p><a href=\"http://course.ouxinyu.cn\\GenericCabling\\Default.html\" target=\"\_blank\">综合布线技术</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\IoT\\Default.html\" target=\"\_blank\">物联网概论</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\Dreamweaver\\Default.html\" target=\"\_blank\">数码绘画基础H5</a> <i style=\"color:gray;\">[2017]</i></p>");
-document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\dl.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
+document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\ml.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
 document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\cm.html\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
 
 
