@@ -4,14 +4,16 @@
  * @Last Modified by:   Your name
  * @Last Modified time: 2020-01-08 14:14:52
  */
+var courseRoot = "https://nbviewer.jupyter.org\\github\\ouxinyu\\Teaching\\blob\\master\\";
+
 document.write("<div class=\"sidebar\">");
 document.write("<h3>Course</h3>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\DiscreteMathematics\\Default.html\" target=\"\_blank\">离散数学</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\GenericCabling\\Default.html\" target=\"\_blank\">综合布线技术</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\IoT\\Default.html\" target=\"\_blank\">物联网概论</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\Dreamweaver\\Default.html\" target=\"\_blank\">数码绘画基础H5</a> <i style=\"color:gray;\">[2017]</i></p>");
-document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\MachineLearning\\index.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
-document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\ComputerMath\\index.html\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
+document.write("<p><a href=\"" + courseRoot + "MachineLearning\\index.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
+document.write("<p><a href=\"" + courseRoot + "ComputerMath\\index.html\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
 
 
 document.write("<p><a href=\"Blogs\\20150413001.html\">SPP-net + Windows 8.1 安装配置指南</a> <i style=\"color:gray;\">[2015-04-13]</i></p>")

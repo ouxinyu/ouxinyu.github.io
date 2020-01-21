@@ -4,6 +4,8 @@
  * @Last Modified by:   Your name
  * @Last Modified time: 2020-01-08 14:14:50
  */
+var courseRoot = "https://nbviewer.jupyter.org\\github\\ouxinyu\\Teaching\\blob\\master\\";
+
 document.write("<div class=\"sidebar\">");
 
 document.write("<div style=\"text-align:left;width:100%;\">");
@@ -16,9 +18,8 @@ document.write("<p><a href=\"http://course.ouxinyu.cn\\DiscreteMathematics\\Defa
 document.write("<p><a href=\"http://course.ouxinyu.cn\\GenericCabling\\Default.html\" target=\"\_blank\">综合布线技术</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\IoT\\Default.html\" target=\"\_blank\">物联网概论</a> <i style=\"color:gray;\">[2018]</i></p>");
 document.write("<p><a href=\"http://course.ouxinyu.cn\\Dreamweaver\\Default.html\" target=\"\_blank\">数码绘画基础H5</a> <i style=\"color:gray;\">[2017]</i></p>");
-document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\MachineLearning\\index.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
-document.write("<p><a href=\"http://ouxinyu.cn\\Teaching\\ComputerMath\\index.html\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
-
+document.write("<p><a href=\"" + courseRoot + "MachineLearning\\index.html\" target=\"\_blank\">机器学习</a> <i style=\"color:gray;\">[2020]</i></p>");
+document.write("<p><a href=\"" + courseRoot + "ComputerMath\\index.html\" target=\"\_blank\">计算机数学</a> <i style=\"color:gray;\">[2020]</i></p>");
 
 document.write("<h3>Latest</h3>");
 document.write("<p><a href=\"Blogs/20151108001.html\">Linux 16.04+Caffe+TensorFlow+CUDA9</a> <i style=\"color:gray;\">[2017-12-20]</i></p>");
