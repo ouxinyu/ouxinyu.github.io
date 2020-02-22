@@ -4,7 +4,7 @@
  * @Last Modified by:   Your name
  * @Last Modified time: 2020-01-08 14:14:52
  */
-var courseRoot = 'http://teaching.ouxinyu.cn';
+var courseRoot = 'http://teaching.ouxinyu.cn/';
 
 document.write("<div class=\"sidebar\">");
 document.write("<h3>Course</h3>");
